@@ -14,6 +14,10 @@ struct Deck {
   struct Card *tail;
 };
 
+struct Pile {
+  struct Card *top;
+};
+
 char suits[4][10] = { "Hearts", "Diamonds", "Clubs", "Spades" };
 
 int values[] = {
@@ -22,7 +26,7 @@ int values[] = {
 
 void dump_deck(struct Deck *deck) {
   struct Card *curr = deck->head, *prev = deck->head;
-  int total = 1;
+  int total = 0;
   while (curr) {
     if (curr->suit != prev->suit)
       printf("\n\n");
@@ -36,9 +40,46 @@ void dump_deck(struct Deck *deck) {
   printf("total cards: %d\n", total);
 }
 
+void dump_pile(struct Pile *pile) {
+  struct Card *curr;
+  for (curr = pile->top; curr != NULL; curr = curr->next) {
+      printf("value: %d\tsuit: %s\n", curr->value, curr->suit);
+  }
+}
+
+void pile_of_cards(struct Pile *pile, struct Deck *deck, int value) {
+  struct Card *curr = deck->head, *prev = deck->head, *piled[4];
+  int i, count = 0;
+  
+  while (curr) {
+    if (curr->value == value) {
+      if (curr == deck->head)
+        deck->head = curr->next;
+
+      if (curr == deck->tail)
+        deck->tail = prev;
+
+      prev->next = curr->next;
+      piled[count++] = curr;
+    }
+
+    prev = curr;
+    curr = curr->next;
+  }
+
+  for (i = count - 1; i >= 0; i--) {
+    if (i == count)
+      piled[i]->next = NULL;
+    else
+      piled[i]->next = piled[i+1];
+    pile->top = piled[i];
+  }
+}
+
 
 void add_card(struct Deck *deck, int val, char *suit) {
   struct Card *card = (struct Card *) malloc(sizeof(struct Card));
+
   card->next = NULL;
   card->suit = suit;
   card->value = val;
@@ -64,6 +105,18 @@ int main() {
     for (j = 0; j < ARRAY_SIZE(values); j++)
       add_card(&deck, values[j], suits[i]);
 
+  dump_deck(&deck);
+
+  struct Pile pile;
+
+  pile.top = NULL;
+
+  pile_of_cards(&pile, &deck, 3);
+
+  printf("==== PILED ====\n");
+  /* dump_pile(&pile); */
+  printf("===============\n");
+  
   dump_deck(&deck);
 
   return 0;
