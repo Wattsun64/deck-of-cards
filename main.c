@@ -68,10 +68,10 @@ void pile_of_cards(struct Pile *pile, struct Deck *deck, int value) {
   }
 
   for (i = count - 1; i >= 0; i--) {
-    if (i == (count - 1))
+    if (i == count && pile->top != NULL)
       piled[i]->next = NULL;
     else
-      piled[i]->next = piled[i+1];
+      piled[i]->next = pile->top;
     pile->top = piled[i];
   }
 }
@@ -112,10 +112,14 @@ int main() {
   pile.top = NULL;
 
   pile_of_cards(&pile, &deck, 3);
+  pile_of_cards(&pile, &deck, 4);
+  pile_of_cards(&pile, &deck, 10);
+  pile_of_cards(&pile, &deck, 'J');
+  pile_of_cards(&pile, &deck, 2);
 
-  printf("==== PILED ====\n");
+  printf("==== PILE ====\n");
   dump_pile(&pile);
-  printf("===============\n");
+  printf("==============\n\n");
   
   dump_deck(&deck);
 
