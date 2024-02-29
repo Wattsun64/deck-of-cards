@@ -68,7 +68,7 @@ void pile_of_cards(struct Pile *pile, struct Deck *deck, int value) {
   }
 
   for (i = count - 1; i >= 0; i--) {
-    if (i == count)
+    if (i == (count - 1))
       piled[i]->next = NULL;
     else
       piled[i]->next = piled[i+1];
@@ -114,7 +114,7 @@ int main() {
   pile_of_cards(&pile, &deck, 3);
 
   printf("==== PILED ====\n");
-  /* dump_pile(&pile); */
+  dump_pile(&pile);
   printf("===============\n");
   
   dump_deck(&deck);
