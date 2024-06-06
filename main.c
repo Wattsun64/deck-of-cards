@@ -24,27 +24,41 @@ int values[] = {
   2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'
 };
 
+void print_card(struct Card *card) {
+  const int value = card->value;
+  const char *suit = card->suit;
+  if (value >= 65 && value <= 81)
+    printf("value: %c\tvalue: %s\n", value, suit);
+  else
+    printf("value: %d\tvalue: %s\n", value, suit);
+}
+
 void dump_deck(struct Deck *deck) {
-  struct Card *curr = deck->head, *prev = deck->head;
+  struct Card *curr = deck->head;
   int total = 0;
   while (curr) {
-    if (curr->suit != prev->suit)
-      printf("\n\n");
-    printf("value: %d\tsuit: %s\n", curr->value, curr->suit);
-    if (curr == deck->tail)
-      printf("\n");
+    print_card(curr);
     total++;
-    prev = curr;
     curr = curr->next;
   }
   printf("total cards: %d\n", total);
 }
 
+void discard(struct Pile *pile, struct Deck *deck) {
+  struct Card *card = pile->top, *next = pile->top->next;
+
+  pile->top = next;
+  card->next = NULL;
+
+  deck->tail->next = card;
+  deck->tail = card;
+
+}
+
 void dump_pile(struct Pile *pile) {
   struct Card *curr;
-  for (curr = pile->top; curr != NULL; curr = curr->next) {
-      printf("value: %d\tsuit: %s\n", curr->value, curr->suit);
-  }
+  for (curr = pile->top; curr != NULL; curr = curr->next)
+    print_card(curr);
 }
 
 void pile_of_cards(struct Pile *pile, struct Deck *deck, int value) {
@@ -112,15 +126,36 @@ int main() {
   pile.top = NULL;
 
   pile_of_cards(&pile, &deck, 3);
+  pile_of_cards(&pile, &deck, 'A');
   pile_of_cards(&pile, &deck, 4);
+  pile_of_cards(&pile, &deck, 5);
   pile_of_cards(&pile, &deck, 10);
   pile_of_cards(&pile, &deck, 'J');
   pile_of_cards(&pile, &deck, 2);
+  pile_of_cards(&pile, &deck, 'K');
 
   printf("==== PILE ====\n");
   dump_pile(&pile);
   printf("==============\n\n");
   
+  dump_deck(&deck);
+
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+  discard(&pile, &deck);
+
+  printf("==== PILE ====\n");
+  dump_pile(&pile);
+  printf("==============\n\n");
+
   dump_deck(&deck);
 
   return 0;
