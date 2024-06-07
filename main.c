@@ -24,7 +24,7 @@ int values[] = {
   2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'
 };
 
-void print_card(struct Card *card) {
+void print_card_details(struct Card *card) {
   const int value = card->value;
   const char *suit = card->suit;
   if (value >= 65 && value <= 81)
@@ -37,7 +37,7 @@ void dump_deck(struct Deck *deck) {
   struct Card *curr = deck->head;
   int total = 0;
   while (curr) {
-    print_card(curr);
+    print_card_details(curr);
     total++;
     curr = curr->next;
   }
@@ -58,7 +58,7 @@ void discard(struct Pile *pile, struct Deck *deck) {
 void dump_pile(struct Pile *pile) {
   struct Card *curr;
   for (curr = pile->top; curr != NULL; curr = curr->next)
-    print_card(curr);
+    print_card_details(curr);
 }
 
 void pile_of_cards(struct Pile *pile, struct Deck *deck, int value) {
